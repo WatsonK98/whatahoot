@@ -12,14 +12,14 @@ class CreateGamePage extends StatefulWidget {
 
 class _CreateGamePageState extends State<CreateGamePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late Future<String?> _join_code;
+  late Future<String?> _joinCode;
 
   Future<void> _createJoinCode() async {
     final SharedPreferences prefs = await _prefs;
     final String joinCode = getRandomString(5);
 
     setState(() {
-      _join_code = prefs.setString('join_code', joinCode!).then((bool success) {
+      _joinCode = prefs.setString('join_code', joinCode!).then((bool success) {
         return joinCode;
       });
     });
@@ -28,13 +28,13 @@ class _CreateGamePageState extends State<CreateGamePage> {
   @override
   void initState() {
     super.initState();
-      _join_code = _prefs.then((SharedPreferences prefs) {
+      _joinCode = _prefs.then((SharedPreferences prefs) {
       return prefs.getString('join_code');
     });
   }
 
   final Random _rnd = Random();
-  final _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  final _chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 

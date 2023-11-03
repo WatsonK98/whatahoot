@@ -41,7 +41,15 @@ class _QRJoinState extends State<QRJoin> {
                   return Text('Error: ${snapshot.error}');
                 } else {
                   return Column(
-
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      QrImageView(
+                        data: "${snapshot.data}",
+                        version: QrVersions.auto,
+                        size: 220,
+                      ),
+                      Text("${snapshot.data}", style: const TextStyle(fontSize: 45, fontWeight: FontWeight.bold)),
+                    ],
                   );
                 }
             }
