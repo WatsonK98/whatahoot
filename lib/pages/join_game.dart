@@ -11,20 +11,22 @@ class JoinGamePage extends StatefulWidget {
 }
 
 class _JoinGamePageState extends State<JoinGamePage> {
-  final TextEditingController _textFieldController = TextEditingController();
+  final TextEditingController _joinCodeController = TextEditingController();
+  final TextEditingController _nicknameController = TextEditingController();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   Future<void> _setJoinCode() async {
     final SharedPreferences prefs = await _prefs;
-
     setState(() {
-      prefs.setString('joinCode', _textFieldController.text!);
+      prefs.setString('joinCode', _joinCodeController.text!);
+      prefs.setString('clientName', _nicknameController.text!);
     });
   }
 
   @override
   void dispose() {
-    _textFieldController.dispose();
+    _joinCodeController.dispose();
+    _nicknameController.dispose();
     super.dispose();
   }
 
@@ -39,6 +41,13 @@ class _JoinGamePageState extends State<JoinGamePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            TextField(
+              controller: _nicknameController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Enter Nickname',
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
               child: Row(
@@ -46,7 +55,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
                   Expanded(
                     flex: 2,
                     child: TextField(
-                      controller: _textFieldController,
+                      controller: _joinCodeController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'Enter Join Code',

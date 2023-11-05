@@ -37,7 +37,7 @@ class _QRJoinState extends State<QRJoin> {
     });
 
     _userName = _prefs.then((SharedPreferences prefs) {
-      return prefs.getString('userName');
+      return prefs.getString('hostName');
     });
 
     _userName.then((username) {

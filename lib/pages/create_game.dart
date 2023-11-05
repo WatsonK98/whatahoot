@@ -26,7 +26,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
     final String joinCode = getRandomString(5);
 
     setState(() {
-      prefs.setString("userName", _textFieldController.text);
+      prefs.setString("hostName", _textFieldController.text);
       _joinCode = prefs.setString('joinCode', joinCode!).then((bool success) {
         return joinCode;
       });
@@ -37,7 +37,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
   void initState() {
     super.initState();
       _joinCode = _prefs.then((SharedPreferences prefs) {
-      return prefs.getString('join_code');
+      return prefs.getString('joinCode');
     });
   }
 
