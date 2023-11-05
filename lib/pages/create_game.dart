@@ -13,13 +13,21 @@ class CreateGamePage extends StatefulWidget {
 class _CreateGamePageState extends State<CreateGamePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late Future<String?> _joinCode;
+  final TextEditingController _textFieldController = TextEditingController();
+
+  @override
+  void dispose() {
+    _textFieldController.dispose();
+    super.dispose();
+  }
 
   Future<void> _createJoinCode() async {
     final SharedPreferences prefs = await _prefs;
     final String joinCode = getRandomString(5);
 
     setState(() {
-      _joinCode = prefs.setString('join_code', joinCode!).then((bool success) {
+      prefs.setString("userName", _textFieldController.text);
+      _joinCode = prefs.setString('joinCode', joinCode!).then((bool success) {
         return joinCode;
       });
     });
@@ -49,6 +57,16 @@ class _CreateGamePageState extends State<CreateGamePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            SizedBox(
+              width: 200,
+              child: TextField(
+                controller: _textFieldController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Enter A Nickname',
+                ),
+              ),
+            ),
             ElevatedButton(
                 onPressed: () {
                   _createJoinCode().then((_) {

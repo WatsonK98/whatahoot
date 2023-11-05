@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class QRJoin extends StatefulWidget {
   const QRJoin({super.key});
@@ -12,12 +14,40 @@ class QRJoin extends StatefulWidget {
 class _QRJoinState extends State<QRJoin> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late Future<String?> _joinCode;
+  late Future<String?> _userName;
 
   @override
   void initState() {
+
     super.initState();
+
+    FirebaseAuth.instance.signInAnonymously();
+    String? playerId = FirebaseAuth.instance.currentUser?.uid;
+    String? serverId;
+
     _joinCode = _prefs.then((SharedPreferences prefs) {
-      return prefs.getString('join_code');
+      return prefs.getString('joinCode');
+    });
+
+    _joinCode.then((joinCode) {
+      if (joinCode != null) {
+        FirebaseDatabase.instance.ref().child('server/$joinCode');
+        serverId = 'server/$joinCode';
+      }
+    });
+
+    _userName = _prefs.then((SharedPreferences prefs) {
+      return prefs.getString('userName');
+    });
+
+    _userName.then((username) {
+      if (username != null) {
+        DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');
+        playerRef.set({
+          'name': username,
+          'votes': 0
+        });
+      }
     });
   }
 

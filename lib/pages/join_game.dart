@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class JoinGamePage extends StatefulWidget {
   const JoinGamePage({super.key});
@@ -9,6 +12,15 @@ class JoinGamePage extends StatefulWidget {
 
 class _JoinGamePageState extends State<JoinGamePage> {
   final TextEditingController _textFieldController = TextEditingController();
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  Future<void> _setJoinCode() async {
+    final SharedPreferences prefs = await _prefs;
+
+    setState(() {
+      prefs.setString('joinCode', _textFieldController.text!);
+    });
+  }
 
   @override
   void dispose() {
@@ -45,7 +57,9 @@ class _JoinGamePageState extends State<JoinGamePage> {
                   Expanded(child:
                     ElevatedButton(
                         onPressed: () {
-                          String textValue = _textFieldController.text;
+                          _setJoinCode().then((_) {
+
+                          });
                         },
                         child: const Text("Join"),
                     ),
