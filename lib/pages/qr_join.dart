@@ -49,6 +49,16 @@ class _QRJoinState extends State<QRJoin> {
                         size: 220,
                       ),
                       Text("${snapshot.data}", style: const TextStyle(fontSize: 45, fontWeight: FontWeight.bold)),
+                      ElevatedButton(
+                        onPressed: () {
+                          //Go to the game state once everyone has joined
+                          //Navigator.push(context,
+                            //MaterialPageRoute(
+                                //builder: (context) => ));
+                        },
+
+                        child: const Text("Continue", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      ),
                     ],
                   );
                 }
