@@ -65,17 +65,20 @@ class _CreateGamePageState extends State<CreateGamePage> {
                   border: OutlineInputBorder(),
                   hintText: 'Enter A Nickname',
                 ),
+                maxLength: 8,
               ),
             ),
+            const SizedBox(height: 10),
             ElevatedButton(
                 onPressed: () {
                   _createJoinCode().then((_) {
                     Navigator.push(context,
                         MaterialPageRoute(
-                            builder: (context) => const QRJoin()));
+                            builder: (context) => const QRJoinPage()));
                   });
                 },
-                child: const Text("Hooty Hoot!")),
+                child: const Text("WhataCaption!")
+            ),
             ElevatedButton(onPressed: () {}, child: const Text("Coming Soon!")),
             ElevatedButton(onPressed: () {}, child: const Text("Coming Soon!")),
           ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'whata_caption.dart';
 
 class JoinGamePage extends StatefulWidget {
   const JoinGamePage({super.key});
@@ -17,8 +18,16 @@ class _JoinGamePageState extends State<JoinGamePage> {
 
   Future<void> _setJoinCode() async {
     final SharedPreferences prefs = await _prefs;
+    await FirebaseAuth.instance.signInAnonymously();
+    String? playerId = FirebaseAuth.instance.currentUser?.uid;
+    DatabaseReference serverRef = FirebaseDatabase.instance.ref().child('/server/${_joinCodeController.text}');
+    DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverRef/players/$playerId');
+    playerRef.set({
+      'name': _nicknameController.text,
+      'votes': 0
+    });
     setState(() {
-      prefs.setString('joinCode', _joinCodeController.text!);
+      prefs.setString('playerRef', '$playerRef');
       prefs.setString('clientName', _nicknameController.text!);
     });
   }
@@ -41,11 +50,16 @@ class _JoinGamePageState extends State<JoinGamePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(
-              controller: _nicknameController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter Nickname',
+            SizedBox(
+              width: 300,
+              height: 85,
+              child: TextField(
+                controller: _nicknameController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Enter Nickname',
+                ),
+                maxLength: 8,
               ),
             ),
             Padding(
@@ -67,7 +81,9 @@ class _JoinGamePageState extends State<JoinGamePage> {
                     ElevatedButton(
                         onPressed: () {
                           _setJoinCode().then((_) {
-
+                            Navigator.push(context,
+                                MaterialPageRoute(
+                                    builder: (context) => const WhataCaptionPage()));
                           });
                         },
                         child: const Text("Join"),

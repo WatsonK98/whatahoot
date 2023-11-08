@@ -4,14 +4,14 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-class QRJoin extends StatefulWidget {
-  const QRJoin({super.key});
+class QRJoinPage extends StatefulWidget {
+  const QRJoinPage({super.key});
 
   @override
-  State<QRJoin> createState() => _QRJoinState();
+  State<QRJoinPage> createState() => _QRJoinPageState();
 }
 
-class _QRJoinState extends State<QRJoin> {
+class _QRJoinPageState extends State<QRJoinPage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late Future<String?> _joinCode;
   late Future<String?> _userName;
