@@ -37,7 +37,7 @@ class _WhataCaptionPageState extends State<WhataCaptionPage>{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Join Game"),
+        title: const Text("WhataCaption!"),
       ),
       body: Center(
         child: Column(

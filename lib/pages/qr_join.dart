@@ -84,7 +84,6 @@ class _QRJoinPageState extends State<QRJoinPage> {
                             MaterialPageRoute(
                                 builder: (context) => const WhataCaptionPage()));
                         },
-
                         child: const Text("Continue", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
                     ],
