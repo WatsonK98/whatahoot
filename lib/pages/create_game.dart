@@ -79,7 +79,9 @@ class _CreateGamePageState extends State<CreateGamePage> {
                 },
                 child: const Text("WhataCaption!")
             ),
+            const SizedBox(height: 10),
             ElevatedButton(onPressed: () {}, child: const Text("Coming Soon!")),
+            const SizedBox(height: 10),
             ElevatedButton(onPressed: () {}, child: const Text("Coming Soon!")),
           ],
         ),

@@ -60,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text("Join Game"),
             ),
+            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(
