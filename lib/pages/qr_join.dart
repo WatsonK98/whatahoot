@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'whata_caption.dart';
+import 'whata_caption_upload.dart';
 
 class QRJoinPage extends StatefulWidget {
   const QRJoinPage({super.key});
@@ -56,7 +56,8 @@ class _QRJoinPageState extends State<QRJoinPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Create Game"),
-      ), body: Center(
+      ),
+      body: Center(
         child: FutureBuilder<String?>(
           future: _joinCode,
           builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
@@ -82,7 +83,7 @@ class _QRJoinPageState extends State<QRJoinPage> {
                         onPressed: () {
                           Navigator.push(context,
                             MaterialPageRoute(
-                                builder: (context) => const WhataCaptionPage()));
+                                builder: (context) => const WhataCaptionUploadPage()));
                         },
                         child: const Text("Continue", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       ),

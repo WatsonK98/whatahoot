@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'whata_caption.dart';
+import 'whata_caption_upload.dart';
 
 class JoinGamePage extends StatefulWidget {
   const JoinGamePage({super.key});
@@ -82,7 +82,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
                           _setJoinCode().then((_) {
                             Navigator.push(context,
                                 MaterialPageRoute(
-                                    builder: (context) => const WhataCaptionPage()));
+                                    builder: (context) => const WhataCaptionUploadPage()));
                           });
                         },
                         child: const Text("Join"),

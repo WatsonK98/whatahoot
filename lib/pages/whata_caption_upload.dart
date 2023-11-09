@@ -3,23 +3,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'whata_caption_caption.dart';
 import 'dart:io';
 
-class WhataCaptionPage extends StatefulWidget{
-  const WhataCaptionPage({super.key});
+class WhataCaptionUploadPage extends StatefulWidget{
+  const WhataCaptionUploadPage({super.key});
 
   @override
-  State<WhataCaptionPage> createState() => _WhataCaptionPageState();
+  State<WhataCaptionUploadPage> createState() => _WhataCaptionUploadPageState();
 }
 
-class _WhataCaptionPageState extends State<WhataCaptionPage>{
+class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
   final TextEditingController _textEditingController = TextEditingController();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final storageRef = FirebaseStorage.instance.ref();
-  int _votes = 0;
   static File? _imageFile;
 
   Future<void> _findImageFile() async {
+    final SharedPreferences prefs = await _prefs;
     ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image == null) {
@@ -29,12 +30,14 @@ class _WhataCaptionPageState extends State<WhataCaptionPage>{
       _imageFile = File(image.path);
     });
     final imageRef = storageRef.child("images/${DateTime.now().millisecondsSinceEpoch}");
+    String imageId = "images/${DateTime.now().millisecondsSinceEpoch}";
     try {
       UploadTask uploadTask = imageRef.putFile(_imageFile!);
       uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
         print('Upload progress: ${snapshot.bytesTransferred}/${snapshot.totalBytes}');
       });
       await uploadTask.whenComplete(() {
+        prefs.setString('imageId', imageId);
         print('Upload complete');
       });
     } catch (e) {
@@ -65,15 +68,36 @@ class _WhataCaptionPageState extends State<WhataCaptionPage>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Score: $_votes', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+            _imageFile != null
+              ? Image.memory(
+                _imageFile!.readAsBytesSync(),
+              width: 350,
+              height: 350,
+              fit: BoxFit.cover,
+              )
+              : Container(),
             const SizedBox(height: 10),
-            ElevatedButton.icon(
-              onPressed: () {
-                _findImageFile().then((_) => null);
-              },
-              icon: const Icon(Icons.cloud_upload),
-              label: const Text('Upload')
-            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton.icon(
+                    onPressed: () {
+                      _findImageFile().then((_) => null);
+                    },
+                    icon: const Icon(Icons.cloud_upload),
+                    label: const Text('Upload')
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(
+                            builder: (context) => const WhataCaptionCaptionPage()));
+                  },
+                  child: const Text('Continue')
+                ),
+              ],
+            )
           ],
         ),
       ),
