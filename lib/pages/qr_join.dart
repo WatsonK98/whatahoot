@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'whata_caption.dart';
 
 class QRJoinPage extends StatefulWidget {
   const QRJoinPage({super.key});
@@ -31,7 +32,6 @@ class _QRJoinPageState extends State<QRJoinPage> {
 
     _joinCode.then((joinCode) {
       if (joinCode != null) {
-        FirebaseDatabase.instance.ref().child('server/$joinCode');
         serverId = 'server/$joinCode';
       }
     });
@@ -45,7 +45,6 @@ class _QRJoinPageState extends State<QRJoinPage> {
         DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');
         playerRef.set({
           'name': username,
-          'votes': 0
         });
       }
     });
@@ -81,10 +80,9 @@ class _QRJoinPageState extends State<QRJoinPage> {
                       Text("${snapshot.data}", style: const TextStyle(fontSize: 45, fontWeight: FontWeight.bold)),
                       ElevatedButton(
                         onPressed: () {
-                          //Go to the game state once everyone has joined
-                          //Navigator.push(context,
-                            //MaterialPageRoute(
-                                //builder: (context) => ));
+                          Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (context) => const WhataCaptionPage()));
                         },
 
                         child: const Text("Continue", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
