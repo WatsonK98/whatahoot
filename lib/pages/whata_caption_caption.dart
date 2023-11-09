@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'whata_caption_vote.dart';
 
 class WhataCaptionCaptionPage extends StatefulWidget {
   const WhataCaptionCaptionPage({super.key});
@@ -12,8 +14,6 @@ class WhataCaptionCaptionPage extends StatefulWidget {
 class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final TextEditingController _textEditingController = TextEditingController();
-  late String? _serverId;
-  late String? _playerId;
   late String? _imageUrl;
 
   Future<void> _loadImage() async {
@@ -33,6 +33,16 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
     }
   }
 
+  Future<void> _setCaption() async {
+    final SharedPreferences prefs = await _prefs;
+    final String? serverId = prefs.getString('serverId');
+    final String? playerId = prefs.getString('playerId');
+    DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');
+    playerRef.set({
+      'caption': _textEditingController.text,
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -44,7 +54,7 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Time to Vote!"),
+        title: const Text("Caption!"),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -74,7 +84,11 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-
+                _setCaption().then((_) {
+                  Navigator.push(context,
+                      MaterialPageRoute(
+                          builder: (context) => const WhataCaptionVotePage()));
+                });
               },
               child: const Text('Let\'s Go!')
             ),
