@@ -23,7 +23,11 @@ class _WhataCaptionPageState extends State<WhataCaptionPage>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Score: '),
+            Row(
+              children: <Widget>[
+                Text('Score: '),
+              ],
+            ),
           ],
         ),
       ),
