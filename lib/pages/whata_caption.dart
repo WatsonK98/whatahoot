@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 
 class WhataCaptionPage extends StatefulWidget{
@@ -15,15 +15,37 @@ class WhataCaptionPage extends StatefulWidget{
 class _WhataCaptionPageState extends State<WhataCaptionPage>{
   final TextEditingController _textEditingController = TextEditingController();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final storageRef = FirebaseStorage.instance.ref();
   int _votes = 0;
   static File? _imageFile;
 
   Future<void> _findImageFile() async {
     ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      return;
+    }
     setState(() {
-      _imageFile = File(image!.path);
+      _imageFile = File(image.path);
     });
+    final imageRef = storageRef.child("images/${DateTime.now().millisecondsSinceEpoch}");
+    try {
+      UploadTask uploadTask = imageRef.putFile(_imageFile!);
+      uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+        print('Upload progress: ${snapshot.bytesTransferred}/${snapshot.totalBytes}');
+      });
+      await uploadTask.whenComplete(() {
+        print('Upload complete');
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
   }
 
   @override
