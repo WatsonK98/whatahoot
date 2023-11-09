@@ -35,8 +35,7 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Vote!"),
       ),
-      body: SingleChildScrollView(
-        child: Column(
+      body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const SizedBox(height: 16),
@@ -49,10 +48,8 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
               )
                   : const CircularProgressIndicator(),
             ),
-            
           ],
         ),
-      ),
-    );
+      );
   }
 }
