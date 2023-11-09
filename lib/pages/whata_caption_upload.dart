@@ -21,6 +21,7 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
 
   Future<void> _findImageFile() async {
     final SharedPreferences prefs = await _prefs;
+    final String? playerId = prefs.getString('playerId');
     ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image == null) {
@@ -29,15 +30,13 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
     setState(() {
       _imageFile = File(image.path);
     });
-    final imageRef = storageRef.child("images/${DateTime.now().millisecondsSinceEpoch}");
-    String imageId = "images/${DateTime.now().millisecondsSinceEpoch}";
+    final imageRef = storageRef.child("images/$playerId");
     try {
       UploadTask uploadTask = imageRef.putFile(_imageFile!);
       uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
         print('Upload progress: ${snapshot.bytesTransferred}/${snapshot.totalBytes}');
       });
       await uploadTask.whenComplete(() {
-        prefs.setString('imageId', imageId);
         print('Upload complete');
       });
     } catch (e) {

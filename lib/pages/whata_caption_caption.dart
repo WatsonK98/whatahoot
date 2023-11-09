@@ -12,28 +12,24 @@ class WhataCaptionCaptionPage extends StatefulWidget {
 class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final TextEditingController _textEditingController = TextEditingController();
-  final storageRef = FirebaseStorage.instance.ref();
   late String? _serverId;
   late String? _playerId;
-  late String? _imageId;
   late String? _imageUrl;
 
   Future<void> _loadImage() async {
-    final SharedPreferences prefs = await _prefs;
-    _serverId = prefs.getString('serverId');
-    _playerId = prefs.getString('playerId');
-    _imageId = prefs.getString('imageId');
+    final storageRef = FirebaseStorage.instance.ref().child('images');
 
-    if(_serverId != null && _playerId != null) {
-      final imageRef = storageRef.child(_imageId!);
-
-      try{
-        _imageUrl = await imageRef.getDownloadURL();
-      } catch (e) {
-        print("Error loading");
+    try {
+      final ListResult result = await storageRef.listAll();
+      if (result.items.isNotEmpty) {
+        final Reference firstImageRef = result.items.first;
+        _imageUrl = await firstImageRef.getDownloadURL();
+        setState(() {});
+      } else {
+        print("No images found in the 'images' directory.");
       }
-
-      setState(() {});
+    } catch (e) {
+      print("Error loading image: $e");
     }
   }
 
