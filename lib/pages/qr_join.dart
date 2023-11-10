@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'whata_caption_upload.dart';
+import 'whatacaption/whata_caption_upload.dart';
 
 class QRJoinPage extends StatefulWidget {
   const QRJoinPage({super.key});

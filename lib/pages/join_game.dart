@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'whata_caption_upload.dart';
+import 'whatacaption/whata_caption_upload.dart';
 
 class JoinGamePage extends StatefulWidget {
   const JoinGamePage({super.key});
