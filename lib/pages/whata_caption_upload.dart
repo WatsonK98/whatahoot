@@ -64,8 +64,7 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
             _imageFile != null
               ? Image.memory(
                 _imageFile!.readAsBytesSync(),
-              width: 350,
-              height: 350,
+              scale: .5,
               fit: BoxFit.cover,
               )
               : Container(),

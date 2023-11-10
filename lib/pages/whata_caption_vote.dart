@@ -47,6 +47,22 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Vote!"),
       ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const SizedBox(height: 16),
+            Center(
+              child: _imageUrl != null
+                  ? Image.network(
+                _imageUrl!,
+                scale: 0.5,
+              )
+                  : const CircularProgressIndicator()
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

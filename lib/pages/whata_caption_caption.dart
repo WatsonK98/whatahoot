@@ -65,8 +65,7 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
               child: _imageUrl != null
                   ? Image.network(
                 _imageUrl!,
-                cacheHeight: 350,
-                cacheWidth: 350,
+                scale: 0.5,
               )
                   : const CircularProgressIndicator(),
             ),
