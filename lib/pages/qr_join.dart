@@ -14,7 +14,7 @@ class QRJoinPage extends StatefulWidget {
 
 class _QRJoinPageState extends State<QRJoinPage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late final Future<String> _joinCode;
+  late Future<String> _joinCode;
 
   Future<void> _initializeData() async {
     SharedPreferences prefs = await _prefs;
@@ -23,6 +23,7 @@ class _QRJoinPageState extends State<QRJoinPage> {
     String? joinCode = await _joinCode;
     prefs.setString('joinCode', joinCode);
     String? serverId = 'servers/$joinCode';
+    prefs.setString('serverId', serverId);
     String? userName = prefs.getString('nickName');
     if (userName != null) {
       DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');

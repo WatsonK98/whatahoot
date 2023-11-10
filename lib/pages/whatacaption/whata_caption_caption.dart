@@ -15,21 +15,20 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final TextEditingController _textEditingController = TextEditingController();
   late String? _imageUrl;
+  late String? _imageId;
 
   Future<void> _loadImage() async {
     SharedPreferences prefs = await _prefs;
     String? serverId = prefs.getString('joinCode');
     final storageRef = FirebaseStorage.instance.ref().child('$serverId');
-    int? round = prefs.getInt('round');
 
     try {
       final ListResult result = await storageRef.listAll();
       if (result.items.isNotEmpty) {
-        if (round! > 1) {
-          result.items.first.delete();
-        }
         final Reference firstImageRef = result.items.first;
         _imageUrl = await firstImageRef.getDownloadURL();
+        _imageId = firstImageRef.name;
+        prefs.setString('imageId', firstImageRef.name);
         setState(() {});
       } else {
         print("No images found in the 'images' directory.");
@@ -41,9 +40,9 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
 
   Future<void> _setCaption() async {
     final SharedPreferences prefs = await _prefs;
-    final String? serverId = prefs.getString('serverId');
+    final String? serverId = prefs.getString('joinCode');
     final String? playerId = prefs.getString('playerId');
-    DatabaseReference captionRef = FirebaseDatabase.instance.ref().child('$serverId/captions/${_textEditingController.text}');
+    DatabaseReference captionRef = FirebaseDatabase.instance.ref().child('servers/$serverId/images/$_imageId/captions/${_textEditingController.text}');
     captionRef.set({
       'uid': playerId
     });

@@ -42,9 +42,10 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
   Future<void> _loadCaptions() async {
     //load the serverId
     SharedPreferences prefs = await _prefs;
-    String? serverId = prefs.getString('serverId');
+    String? serverId = prefs.getString('joinCode');
+    String? imageId = prefs.getString('imageId');
     //open a reference
-    DatabaseReference captionsRef = FirebaseDatabase.instance.ref().child('$serverId/captions/');
+    DatabaseReference captionsRef = FirebaseDatabase.instance.ref().child('servers/$serverId/images/$imageId/captions/');
     //create a snapshot
     final snapshot = await captionsRef.get();
 
