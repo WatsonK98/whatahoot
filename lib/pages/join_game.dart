@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'whatacaption/whata_caption_upload.dart';
 
 class JoinGamePage extends StatefulWidget {
@@ -15,6 +16,9 @@ class _JoinGamePageState extends State<JoinGamePage> {
   final TextEditingController _joinCodeController = TextEditingController();
   final TextEditingController _nicknameController = TextEditingController();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
+  Barcode? result;
+  QRViewController? controller;
 
   Future<bool> _setJoinCode() async {
     final SharedPreferences prefs = await _prefs;
@@ -39,6 +43,16 @@ class _JoinGamePageState extends State<JoinGamePage> {
     }
   }
 
+  _onQRViewCreated(QRViewController controller) {
+    this.controller = controller;
+    controller.scannedDataStream.listen((scanData) {
+      setState(() {
+        _joinCodeController.text = scanData.code!;
+      });
+      controller.stopCamera();
+    });
+  }
+
   @override
   void dispose() {
     _joinCodeController.dispose();
@@ -54,55 +68,67 @@ class _JoinGamePageState extends State<JoinGamePage> {
         title: const Text("Join Game"),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              width: 300,
-              height: 85,
-              child: TextField(
-                controller: _nicknameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter Nickname',
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                height: 300,
+                width: 300,
+                child: QRView(
+                  key: _qrKey,
+                  onQRViewCreated: _onQRViewCreated,
                 ),
-                maxLength: 8,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 2,
-                    child: TextField(
-                      controller: _joinCodeController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Enter Join Code',
-                      ),
-                    ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: 300,
+                height: 85,
+                child: TextField(
+                  controller: _nicknameController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter Nickname',
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(child:
-                    ElevatedButton(
+                  maxLength: 8,
+                ),
+              ),
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 2,
+                        child: TextField(
+                          controller: _joinCodeController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Enter Join Code',
+                          ),
+                          maxLength: 5,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(child:
+                      ElevatedButton(
                         onPressed: () async {
                           if(await _setJoinCode()) {
                             Navigator.push(context,
-                              MaterialPageRoute(
-                                builder: (context) => const WhataCaptionUploadPage()));
+                                MaterialPageRoute(
+                                    builder: (context) => const WhataCaptionUploadPage()));
                           } else {
                             _joinCodeController.clear();
                           }
                         },
                         child: const Text("Join"),
-                    ),
-                  ),
-                ],
-              )
-            ),
-          ],
-        ),
+                      ),
+                      ),
+                    ],
+                  )
+              ),
+            ],
+          ),
+       ),
       ),
     );
   }
