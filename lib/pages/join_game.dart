@@ -33,11 +33,9 @@ class _JoinGamePageState extends State<JoinGamePage> {
         'name': _nicknameController.text,
         'votes': 0
       });
-      setState(() {
-        prefs.setString('playerId', playerId!);
-        prefs.setString('serverId', serverId);
-        prefs.setInt('round', 1);
-      });
+      prefs.setString('playerId', playerId!);
+      prefs.setString('serverId', serverId);
+      prefs.setInt('round', 1);
       return true;
     } else {
       return false;

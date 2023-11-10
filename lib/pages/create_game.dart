@@ -13,7 +13,6 @@ class CreateGamePage extends StatefulWidget {
 class _CreateGamePageState extends State<CreateGamePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final TextEditingController _textFieldController = TextEditingController();
-  late Future<String?> _joinCode;
 
   final Random _rnd = Random();
   final _chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
@@ -24,21 +23,9 @@ class _CreateGamePageState extends State<CreateGamePage> {
     final SharedPreferences prefs = await _prefs;
     final String joinCode = getRandomString(5);
 
-    setState(() {
-      prefs.setString("hostName", _textFieldController.text);
-      _joinCode = prefs.setString('joinCode', joinCode!).then((bool success) {
-        prefs.setInt('round', 1);
-        return joinCode;
-      });
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-      _joinCode = _prefs.then((SharedPreferences prefs) {
-      return prefs.getString('joinCode');
-    });
+    prefs.setString('nickName', _textFieldController.text);
+    prefs.setString('joinCode', joinCode);
+    prefs.setInt('round', 1);
   }
 
   @override

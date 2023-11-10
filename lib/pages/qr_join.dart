@@ -14,39 +14,29 @@ class QRJoinPage extends StatefulWidget {
 
 class _QRJoinPageState extends State<QRJoinPage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late Future<String?> _joinCode;
-  late Future<String?> _userName;
+  late final Future<String> _joinCode;
+
+  Future<void> _initializeData() async {
+    SharedPreferences prefs = await _prefs;
+    FirebaseAuth.instance.signInAnonymously();
+    String? playerId = FirebaseAuth.instance.currentUser?.uid;
+    _joinCode = prefs.getString('joinCode')! as Future<String>;
+    String? serverId = 'servers/$_joinCode';
+    String? userName = prefs.getString('nickName');
+
+    if (userName != null) {
+      DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');
+      playerRef.set({
+        'name': userName,
+        'votes': 0
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    FirebaseAuth.instance.signInAnonymously();
-    String? playerId = FirebaseAuth.instance.currentUser?.uid;
-    String? serverId;
-
-    _joinCode = _prefs.then((SharedPreferences prefs) {
-      return prefs.getString('joinCode');
-    });
-
-    _joinCode.then((joinCode) {
-      if (joinCode != null) {
-        serverId = 'servers/$joinCode';
-      }
-    });
-
-    _userName = _prefs.then((SharedPreferences prefs) {
-      return prefs.getString('hostName');
-    });
-
-    _userName.then((username) {
-      if (username != null) {
-        DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');
-        playerRef.set({
-          'name': username,
-          'votes': 0
-        });
-      }
-    });
+    _initializeData();
   }
 
   @override
