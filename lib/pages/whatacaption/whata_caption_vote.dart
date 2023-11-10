@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -12,7 +14,7 @@ class WhataCaptionVotePage extends StatefulWidget {
 
 class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref();
+  List<String> captions = [];
   late String? _imageUrl;
 
   Future<void> _loadImage() async {
@@ -31,8 +33,6 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
       print("Error loading image: $e");
     }
   }
-
-
 
   @override
   void initState() {
@@ -60,6 +60,7 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
               )
                   : const CircularProgressIndicator()
             ),
+            const SizedBox(height: 16),
           ],
         ),
       ),

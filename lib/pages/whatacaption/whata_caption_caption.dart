@@ -37,9 +37,9 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
     final SharedPreferences prefs = await _prefs;
     final String? serverId = prefs.getString('serverId');
     final String? playerId = prefs.getString('playerId');
-    DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');
-    playerRef.set({
-      'caption': _textEditingController.text,
+    DatabaseReference captionRef = FirebaseDatabase.instance.ref().child('$serverId/captions/${_textEditingController.text}');
+    captionRef.set({
+      'uid': playerId
     });
   }
 
