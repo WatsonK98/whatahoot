@@ -24,6 +24,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
     DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');
     playerRef.set({
       'name': _nicknameController.text,
+      'votes': 0
     });
     setState(() {
       prefs.setString('playerId', playerId!);

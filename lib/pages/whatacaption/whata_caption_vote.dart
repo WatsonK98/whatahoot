@@ -61,10 +61,20 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
   }
 
   ///update the caption vote
-  Future<void> _voteCaption() async {
+  Future<void> _voteCaption(String caption) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? serverId = prefs.getString('serverId');
-    DatabaseReference captionsRef = FirebaseDatabase.instance.ref().child('$serverId/captions/');
+    DatabaseReference captionsRef = FirebaseDatabase.instance.ref().child('$serverId/captions/$caption/uid');
+    final snapshot = await captionsRef.get();
+    if (snapshot.exists) {
+      DatabaseReference votesRef = FirebaseDatabase.instance.ref().child('$serverId/players/${snapshot.value.toString()}/votes');
+      final snapshot2 = await votesRef.get();
+      if (snapshot2.exists) {
+        int vote = int.parse(snapshot2.value.toString());
+        vote++;
+        votesRef.set(vote);
+      }
+    }
   }
 
   @override
@@ -102,8 +112,8 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
                 return ListTile(
                   title: Text(captions[index]),
                   trailing: ElevatedButton(
-                    onPressed: () {
-
+                    onPressed: () async {
+                      _voteCaption(captions[index]);
                     },
                     child: const Text('Vote'),
                   ),
