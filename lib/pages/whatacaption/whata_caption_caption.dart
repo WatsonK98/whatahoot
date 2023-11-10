@@ -17,11 +17,17 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
   late String? _imageUrl;
 
   Future<void> _loadImage() async {
-    final storageRef = FirebaseStorage.instance.ref().child('images');
+    SharedPreferences prefs = await _prefs;
+    String? serverId = prefs.getString('joinCode');
+    final storageRef = FirebaseStorage.instance.ref().child('$serverId');
+    int? round = prefs.getInt('round');
 
     try {
       final ListResult result = await storageRef.listAll();
       if (result.items.isNotEmpty) {
+        if (round! > 1) {
+          result.items.first.delete();
+        }
         final Reference firstImageRef = result.items.first;
         _imageUrl = await firstImageRef.getDownloadURL();
         setState(() {});

@@ -20,10 +20,10 @@ class _QRJoinPageState extends State<QRJoinPage> {
     SharedPreferences prefs = await _prefs;
     FirebaseAuth.instance.signInAnonymously();
     String? playerId = FirebaseAuth.instance.currentUser?.uid;
-    _joinCode = prefs.getString('joinCode')! as Future<String>;
-    String? serverId = 'servers/$_joinCode';
+    String? joinCode = await _joinCode;
+    prefs.setString('joinCode', joinCode);
+    String? serverId = 'servers/$joinCode';
     String? userName = prefs.getString('nickName');
-
     if (userName != null) {
       DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');
       playerRef.set({
@@ -36,7 +36,13 @@ class _QRJoinPageState extends State<QRJoinPage> {
   @override
   void initState() {
     super.initState();
-    _initializeData();
+    _joinCode = _prefs.then((SharedPreferences prefs) {
+      return prefs.getString('joinCode') ?? '';
+    });
+
+    _joinCode.then((_) {
+      _initializeData();
+    });
   }
 
   @override

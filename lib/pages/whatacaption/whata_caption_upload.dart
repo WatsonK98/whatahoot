@@ -20,6 +20,7 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
 
   Future<void> _findImageFile() async {
     SharedPreferences prefs = await _prefs;
+    String? serverId = prefs.getString('joinCode');
     String? playerId = prefs.getString('playerId');
     ImagePicker picker = ImagePicker();
     XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -29,7 +30,7 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
     setState(() {
       _imageFile = File(image.path);
     });
-    final imageRef = storageRef.child("images/$playerId");
+    final imageRef = storageRef.child("$serverId/$playerId");
     try {
       UploadTask uploadTask = imageRef.putFile(_imageFile!);
       uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
@@ -56,17 +57,19 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("WhataCaption!"),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            _imageFile != null
-              ? Image.memory(
-                _imageFile!.readAsBytesSync(),
-              scale: .5,
-              fit: BoxFit.cover,
-              )
-              : Container(),
+            Center(
+              child: _imageFile != null
+                      ? Image.memory(
+                    _imageFile!.readAsBytesSync(),
+                    scale: .5,
+                    fit: BoxFit.cover,
+                  )
+                  : Container(),
+            ),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -80,12 +83,12 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(
-                            builder: (context) => const WhataCaptionCaptionPage()));
-                  },
-                  child: const Text('Continue')
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(
+                              builder: (context) => const WhataCaptionCaptionPage()));
+                    },
+                    child: const Text('Continue')
                 ),
               ],
             )

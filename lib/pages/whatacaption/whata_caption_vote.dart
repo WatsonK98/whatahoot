@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'whata_caption_caption.dart';
 
 class WhataCaptionVotePage extends StatefulWidget {
   const WhataCaptionVotePage({super.key});
@@ -20,7 +20,9 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
 
   ///Load Image from the net storage container
   Future<void> _loadImage() async {
-    final storageRef = FirebaseStorage.instance.ref().child('images');
+    SharedPreferences prefs = await _prefs;
+    String? serverId = prefs.getString('joinCode');
+    final storageRef = FirebaseStorage.instance.ref().child('$serverId');
 
     try {
       final ListResult result = await storageRef.listAll();
@@ -38,23 +40,30 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
 
   ///Load captions from the database
   Future<void> _loadCaptions() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //load the serverId
+    SharedPreferences prefs = await _prefs;
     String? serverId = prefs.getString('serverId');
+    //open a reference
     DatabaseReference captionsRef = FirebaseDatabase.instance.ref().child('$serverId/captions/');
+    //create a snapshot
     final snapshot = await captionsRef.get();
+
     if (snapshot.exists) {
+      //get the value of the snapshot
       String data = snapshot.value.toString();
 
       // Remove the enclosing curly braces and split the string by commas
       List<String> pairs = data.substring(1, data.length - 1).split(', ');
 
-      Map<String, String> parsedData = {};
-
-      pairs.forEach((pair) {
+      //go through each pair
+      for (var pair in pairs) {
+        //split the pairs to get the key value
         List<String> keyValue = pair.split(': {uid: ');
+        //trim the key
         String key = keyValue[0].trim();
+        //add the key
         captions.add(key);
-      });
+      }
     } else {
       print('No data available.');
     }
@@ -62,7 +71,7 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
 
   ///update the caption vote
   Future<void> _voteCaption(String caption) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await _prefs;
     String? serverId = prefs.getString('serverId');
     DatabaseReference captionsRef = FirebaseDatabase.instance.ref().child('$serverId/captions/$caption/uid');
     final snapshot = await captionsRef.get();
@@ -73,11 +82,11 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
         int vote = int.parse(snapshot2.value.toString());
         vote++;
         votesRef.set(vote);
+        int? round = prefs.getInt('round');
+        round! + 1;
+        prefs.setInt('round', round);
       }
     }
-    int? round = prefs.getInt('round');
-    round! + 1;
-    prefs.setInt('round', round);
   }
 
   @override
@@ -101,10 +110,10 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
             const SizedBox(height: 16),
             Center(
               child: _imageUrl != null
-                  ? Image.network(
-                _imageUrl!,
-                scale: 0.5,
-              )
+                      ? Image.network(
+                    _imageUrl!,
+                    scale: 0.5,
+                  )
                   : const CircularProgressIndicator()
             ),
             const SizedBox(height: 16),
@@ -117,7 +126,9 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
                   trailing: ElevatedButton(
                     onPressed: () {
                       _voteCaption(captions[index]).then((_) {
-
+                        Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (context) => const WhataCaptionCaptionPage()));
                       });
                     },
                     child: const Text('Vote'),
