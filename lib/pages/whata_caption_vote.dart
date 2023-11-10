@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'whata_caption_upload.dart';
 
 class WhataCaptionVotePage extends StatefulWidget {
   const WhataCaptionVotePage({super.key});
@@ -11,12 +9,10 @@ class WhataCaptionVotePage extends StatefulWidget {
 }
 
 class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late String? _imageUrl;
 
   Future<void> _loadImage() async {
     final storageRef = FirebaseStorage.instance.ref().child('images');
-    final SharedPreferences prefs = await _prefs;
 
     try {
       final ListResult result = await storageRef.listAll();
@@ -26,26 +22,16 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
         setState(() {});
       } else {
         print("No images found in the 'images' directory.");
-        int? currentRound = prefs.getInt('round');
-        if (currentRound == Null) {
-          prefs.setInt('round', 1);
-          //go to upload
-          Navigator.push(context,
-              MaterialPageRoute(
-                  builder: (context) => const WhataCaptionUploadPage()));
-        } else if (currentRound! == 1) {
-          prefs.setInt('round', ++currentRound);
-          //go to upload
-          Navigator.push(context,
-              MaterialPageRoute(
-                  builder: (context) => const WhataCaptionUploadPage()));
-        } else {
-          // go to win page
-        }
       }
     } catch (e) {
       print("Error loading image: $e");
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImage();
   }
 
   @override
@@ -58,16 +44,14 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
       body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            _imageUrl != null
+                ? Image.network(
+              _imageUrl!,
+              width: 200, // Set the width as needed
+              height: 200, // Set the height as needed
+            )
+                : const Text("Image not available"),
             const SizedBox(height: 16),
-            Center(
-              child: _imageUrl != null
-                  ? Image.network(
-                _imageUrl!,
-                cacheHeight: 350,
-                cacheWidth: 350,
-              )
-                  : const CircularProgressIndicator(),
-            ),
           ],
         ),
       );
