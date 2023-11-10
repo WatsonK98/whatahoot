@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WhataCaptionVotePage extends StatefulWidget {
   const WhataCaptionVotePage({super.key});
@@ -9,6 +11,8 @@ class WhataCaptionVotePage extends StatefulWidget {
 }
 
 class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref();
   late String? _imageUrl;
 
   Future<void> _loadImage() async {
@@ -28,6 +32,8 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
     }
   }
 
+
+
   @override
   void initState() {
     super.initState();
@@ -41,19 +47,6 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Vote!"),
       ),
-      body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _imageUrl != null
-                ? Image.network(
-              _imageUrl!,
-              width: 200, // Set the width as needed
-              height: 200, // Set the height as needed
-            )
-                : const Text("Image not available"),
-            const SizedBox(height: 16),
-          ],
-        ),
-      );
+    );
   }
 }

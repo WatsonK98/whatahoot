@@ -32,7 +32,7 @@ class _QRJoinPageState extends State<QRJoinPage> {
 
     _joinCode.then((joinCode) {
       if (joinCode != null) {
-        serverId = 'server/$joinCode';
+        serverId = 'servers/$joinCode';
       }
     });
 

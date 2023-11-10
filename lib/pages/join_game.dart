@@ -20,7 +20,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
     final SharedPreferences prefs = await _prefs;
     await FirebaseAuth.instance.signInAnonymously();
     String? playerId = FirebaseAuth.instance.currentUser?.uid.toString();
-    String serverId = 'server/${_joinCodeController.text}';
+    String serverId = 'servers/${_joinCodeController.text}';
     DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');
     playerRef.set({
       'name': _nicknameController.text,

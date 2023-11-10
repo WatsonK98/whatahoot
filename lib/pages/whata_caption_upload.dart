@@ -45,12 +45,6 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
   }
 
   @override
-  void initState() {
-    super.initState();
-
-  }
-
-  @override
   void dispose() {
     _textEditingController.dispose();
     super.dispose();
