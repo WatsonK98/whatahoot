@@ -23,6 +23,7 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
     final storageRef = FirebaseStorage.instance.ref().child('$serverId');
 
     try {
+      await Future.delayed(const Duration(seconds: 20));
       final ListResult result = await storageRef.listAll();
       if (result.items.isNotEmpty) {
         final Reference firstImageRef = result.items.first;
@@ -40,9 +41,9 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
 
   Future<void> _setCaption() async {
     final SharedPreferences prefs = await _prefs;
-    final String? serverId = prefs.getString('joinCode');
+    final String? serverId = prefs.getString('serverId');
     final String? playerId = prefs.getString('playerId');
-    DatabaseReference captionRef = FirebaseDatabase.instance.ref().child('servers/$serverId/images/$_imageId/captions/${_textEditingController.text}');
+    DatabaseReference captionRef = FirebaseDatabase.instance.ref().child('$serverId/images/$_imageId/${_textEditingController.text}');
     captionRef.set({
       'uid': playerId
     });

@@ -35,6 +35,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
       });
       prefs.setString('playerId', playerId!);
       prefs.setString('serverId', serverId);
+      prefs.setString('joinCode', _joinCodeController.text);
       prefs.setInt('round', 1);
       return true;
     } else {
@@ -113,6 +114,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
                           onPressed: () {
                             _setJoinCode().then((bool success) {
                               if (success) {
+                                controller?.stopCamera();
                                 Navigator.push(context,
                                     MaterialPageRoute(
                                         builder: (context) => const WhataCaptionUploadPage()));

@@ -25,6 +25,7 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
     final storageRef = FirebaseStorage.instance.ref().child('$serverId');
 
     try {
+      await Future.delayed(const Duration(seconds: 20));
       final ListResult result = await storageRef.listAll();
       if (result.items.isNotEmpty) {
         final Reference firstImageRef = result.items.first;
@@ -42,10 +43,10 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
   Future<void> _loadCaptions() async {
     //load the serverId
     SharedPreferences prefs = await _prefs;
-    String? serverId = prefs.getString('joinCode');
+    String? serverId = prefs.getString('serverId');
     String? imageId = prefs.getString('imageId');
     //open a reference
-    DatabaseReference captionsRef = FirebaseDatabase.instance.ref().child('servers/$serverId/images/$imageId/captions/');
+    DatabaseReference captionsRef = FirebaseDatabase.instance.ref().child('$serverId/images/$imageId/');
     //create a snapshot
     final snapshot = await captionsRef.get();
 
