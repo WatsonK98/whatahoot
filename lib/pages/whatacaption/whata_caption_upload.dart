@@ -20,10 +20,10 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
   static File? _imageFile;
 
   Future<void> _findImageFile() async {
-    final SharedPreferences prefs = await _prefs;
-    final String? playerId = prefs.getString('playerId');
+    SharedPreferences prefs = await _prefs;
+    String? playerId = prefs.getString('playerId');
     ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image == null) {
       return;
     }

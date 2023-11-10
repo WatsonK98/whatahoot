@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -17,6 +18,7 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
   List<String> captions = [];
   late String? _imageUrl;
 
+  ///Load Image from the net storage container
   Future<void> _loadImage() async {
     final storageRef = FirebaseStorage.instance.ref().child('images');
 
@@ -34,10 +36,42 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
     }
   }
 
+  ///Load captions from the database
+  Future<void> _loadCaptions() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? serverId = prefs.getString('serverId');
+    DatabaseReference captionsRef = FirebaseDatabase.instance.ref().child('$serverId/captions/');
+    final snapshot = await captionsRef.get();
+    if (snapshot.exists) {
+      String data = snapshot.value.toString();
+
+      // Remove the enclosing curly braces and split the string by commas
+      List<String> pairs = data.substring(1, data.length - 1).split(', ');
+
+      Map<String, String> parsedData = {};
+
+      pairs.forEach((pair) {
+        List<String> keyValue = pair.split(': {uid: ');
+        String key = keyValue[0].trim();
+        captions.add(key);
+      });
+    } else {
+      print('No data available.');
+    }
+  }
+
+  ///update the caption vote
+  Future<void> _voteCaption() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? serverId = prefs.getString('serverId');
+    DatabaseReference captionsRef = FirebaseDatabase.instance.ref().child('$serverId/captions/');
+  }
+
   @override
   void initState() {
     super.initState();
     _loadImage();
+    _loadCaptions();
   }
 
   @override
@@ -61,6 +95,21 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
                   : const CircularProgressIndicator()
             ),
             const SizedBox(height: 16),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: captions.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(captions[index]),
+                  trailing: ElevatedButton(
+                    onPressed: () {
+
+                    },
+                    child: const Text('Vote'),
+                  ),
+                );
+              }
+            ),
           ],
         ),
       ),
