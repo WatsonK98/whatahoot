@@ -12,14 +12,13 @@ class CreateGamePage extends StatefulWidget {
 
 class _CreateGamePageState extends State<CreateGamePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late Future<String?> _joinCode;
   final TextEditingController _textFieldController = TextEditingController();
+  late Future<String?> _joinCode;
 
-  @override
-  void dispose() {
-    _textFieldController.dispose();
-    super.dispose();
-  }
+  final Random _rnd = Random();
+  final _chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
+  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
   Future<void> _createJoinCode() async {
     final SharedPreferences prefs = await _prefs;
@@ -28,6 +27,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
     setState(() {
       prefs.setString("hostName", _textFieldController.text);
       _joinCode = prefs.setString('joinCode', joinCode!).then((bool success) {
+        prefs.setInt('round', 1);
         return joinCode;
       });
     });
@@ -41,10 +41,11 @@ class _CreateGamePageState extends State<CreateGamePage> {
     });
   }
 
-  final Random _rnd = Random();
-  final _chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
-  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
-      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+  @override
+  void dispose() {
+    _textFieldController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

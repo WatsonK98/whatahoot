@@ -36,6 +36,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
       setState(() {
         prefs.setString('playerId', playerId!);
         prefs.setString('serverId', serverId);
+        prefs.setInt('round', 1);
       });
       return true;
     } else {
@@ -110,18 +111,20 @@ class _JoinGamePageState extends State<JoinGamePage> {
                       ),
                       const SizedBox(width: 16),
                       Expanded(child:
-                      ElevatedButton(
-                        onPressed: () async {
-                          if(await _setJoinCode()) {
-                            Navigator.push(context,
-                                MaterialPageRoute(
-                                    builder: (context) => const WhataCaptionUploadPage()));
-                          } else {
-                            _joinCodeController.clear();
-                          }
-                        },
-                        child: const Text("Join"),
-                      ),
+                        ElevatedButton(
+                          onPressed: () {
+                            _setJoinCode().then((bool success) {
+                              if (success) {
+                                Navigator.push(context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const WhataCaptionUploadPage()));
+                              } else {
+                                _joinCodeController.clear();
+                              }
+                            });
+                          },
+                          child: const Text("Join"),
+                        ),
                       ),
                     ],
                   )

@@ -75,6 +75,9 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
         votesRef.set(vote);
       }
     }
+    int? round = prefs.getInt('round');
+    round! + 1;
+    prefs.setInt('round', round);
   }
 
   @override
@@ -112,8 +115,10 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
                 return ListTile(
                   title: Text(captions[index]),
                   trailing: ElevatedButton(
-                    onPressed: () async {
-                      _voteCaption(captions[index]);
+                    onPressed: () {
+                      _voteCaption(captions[index]).then((_) {
+
+                      });
                     },
                     child: const Text('Vote'),
                   ),
