@@ -16,20 +16,27 @@ class _JoinGamePageState extends State<JoinGamePage> {
   final TextEditingController _nicknameController = TextEditingController();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  Future<void> _setJoinCode() async {
+  Future<bool> _setJoinCode() async {
     final SharedPreferences prefs = await _prefs;
     await FirebaseAuth.instance.signInAnonymously();
     String? playerId = FirebaseAuth.instance.currentUser?.uid.toString();
     String serverId = 'servers/${_joinCodeController.text}';
-    DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');
-    playerRef.set({
-      'name': _nicknameController.text,
-      'votes': 0
-    });
-    setState(() {
-      prefs.setString('playerId', playerId!);
-      prefs.setString('serverId', serverId);
-    });
+    DatabaseReference serverRef = FirebaseDatabase.instance.ref().child(serverId);
+    final snapshot = await serverRef.get();
+    if (snapshot.exists) {
+      DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');
+      playerRef.set({
+        'name': _nicknameController.text,
+        'votes': 0
+      });
+      setState(() {
+        prefs.setString('playerId', playerId!);
+        prefs.setString('serverId', serverId);
+      });
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @override
@@ -79,12 +86,14 @@ class _JoinGamePageState extends State<JoinGamePage> {
                   const SizedBox(width: 16),
                   Expanded(child:
                     ElevatedButton(
-                        onPressed: () {
-                          _setJoinCode().then((_) {
+                        onPressed: () async {
+                          if(await _setJoinCode()) {
                             Navigator.push(context,
-                                MaterialPageRoute(
-                                    builder: (context) => const WhataCaptionUploadPage()));
-                          });
+                              MaterialPageRoute(
+                                builder: (context) => const WhataCaptionUploadPage()));
+                          } else {
+                            _joinCodeController.clear();
+                          }
                         },
                         child: const Text("Join"),
                     ),

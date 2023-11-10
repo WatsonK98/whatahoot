@@ -19,9 +19,7 @@ class _QRJoinPageState extends State<QRJoinPage> {
 
   @override
   void initState() {
-
     super.initState();
-
     FirebaseAuth.instance.signInAnonymously();
     String? playerId = FirebaseAuth.instance.currentUser?.uid;
     String? serverId;
@@ -45,6 +43,7 @@ class _QRJoinPageState extends State<QRJoinPage> {
         DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');
         playerRef.set({
           'name': username,
+          'votes': 0
         });
       }
     });
