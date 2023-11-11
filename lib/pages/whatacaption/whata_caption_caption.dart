@@ -5,19 +5,23 @@ import 'package:firebase_database/firebase_database.dart';
 import 'whata_caption_vote.dart';
 import 'whata_caption_win.dart';
 
+///Caption page starting point
 class WhataCaptionCaptionPage extends StatefulWidget {
   const WhataCaptionCaptionPage({super.key});
 
+  ///initialize the state
   @override
   State<WhataCaptionCaptionPage> createState() => _WhataCaptionCaptionPageState();
 }
 
+///Page state
 class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final TextEditingController _textEditingController = TextEditingController();
   late String? _imageUrl;
   late String? _imageId;
 
+  ///Loads the image from cloud storage
   Future<void> _loadImage() async {
     SharedPreferences prefs = await _prefs;
     String? serverId = prefs.getString('joinCode');
@@ -26,8 +30,9 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
     try {
       final ListResult result = await storageRef.listAll();
       if (result.items.isNotEmpty) {
-        int? round = prefs.getInt('round');
-        if (round! < result.items.length) {
+        //Use the round to get the appropriate image
+        int round = prefs.getInt('round') ?? 0;
+        if (round < result.items.length) {
           final Reference firstImageRef = result.items[round];
           _imageUrl = await firstImageRef.getDownloadURL();
           _imageId = firstImageRef.name;
@@ -46,6 +51,7 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
     }
   }
 
+  ///Sends the caption with reference data to the database
   Future<void> _setCaption() async {
     final SharedPreferences prefs = await _prefs;
     final String? serverId = prefs.getString('serverId');
@@ -56,10 +62,18 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
     });
   }
 
+  ///Initialize the state
   @override
   void initState() {
     super.initState();
     _loadImage();
+  }
+
+  ///Dispose of controllers
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -98,13 +112,11 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
               onPressed: () {
                 if (_textEditingController.text.isNotEmpty){
                   _setCaption().then((_) {
-                    Navigator.push(context,
-                        MaterialPageRoute(
-                            builder: (context) => const WhataCaptionVotePage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const WhataCaptionVotePage()));
                   });
                 }
               },
-              child: const Text('Let\'s Go!')
+              child: const Text('Let\'s Go!'),
             ),
           ],
         ),
