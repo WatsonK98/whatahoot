@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'whata_caption_vote.dart';
+import 'whata_caption_win.dart';
 
 class WhataCaptionCaptionPage extends StatefulWidget {
   const WhataCaptionCaptionPage({super.key});
@@ -34,7 +35,9 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
           prefs.setString('imageId', firstImageRef.name);
           setState(() {});
         } else {
-          //move to win!
+          Navigator.push(context,
+              MaterialPageRoute(
+                  builder: (context) => const WhataCaptionWinPage()));
         }
       } else {
         print("No images found in the 'images' directory.");

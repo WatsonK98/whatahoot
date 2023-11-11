@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class WhataCaptionWinPage extends StatefulWidget {
@@ -9,6 +12,16 @@ class WhataCaptionWinPage extends StatefulWidget {
 }
 
 class _WhataCaptionWinPageState extends State<WhataCaptionWinPage>{
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final String? _winner = "One Sec!";
+
+  Future<void> _findWinner() async {
+    SharedPreferences prefs = await _prefs;
+    String? serverId = prefs.getString('serverId');
+
+    DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players');
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +32,7 @@ class _WhataCaptionWinPageState extends State<WhataCaptionWinPage>{
       ), body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-
+          Text('$_winner'),
         ],
       ),
     );
