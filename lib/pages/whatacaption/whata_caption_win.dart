@@ -20,7 +20,7 @@ class _WhataCaptionWinPageState extends State<WhataCaptionWinPage>{
     String? serverId = prefs.getString('serverId');
 
     DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players');
-
+    Future<DatabaseEvent> playerSnapshot = playerRef.orderByChild('votes').orderByValue().once();
   }
 
   @override
