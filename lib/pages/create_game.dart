@@ -3,37 +3,47 @@ import 'package:whatahoot/pages/qr_join.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 
+///Stateful widget for create game ensures user input
 class CreateGamePage extends StatefulWidget {
   const CreateGamePage({super.key});
 
+  //Initialize the state
   @override
   State<CreateGamePage> createState() => _CreateGamePageState();
 }
 
+///Page state for create game
 class _CreateGamePageState extends State<CreateGamePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final TextEditingController _textFieldController = TextEditingController();
 
+  //Random alphanumeric generator in lambda
   final Random _rnd = Random();
   final _chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
+  ///Create join code method gets the user nickname and generated join code.
+  ///Saves the join code, and initializes the round to 0 to help with
+  ///indexing of online resources
   Future<void> _createJoinCode() async {
     final SharedPreferences prefs = await _prefs;
     final String joinCode = getRandomString(5);
 
-    prefs.setString('nickName', _textFieldController.text);
-    prefs.setString('joinCode', joinCode);
-    prefs.setInt('round', 1);
+    await prefs.setString('nickName', _textFieldController.text);
+    await prefs.setString('joinCode', joinCode);
+    await prefs.setInt('round', 0);
   }
 
+  ///Dispose clears the controller and any other listeners except for
+  ///shared preferences
   @override
   void dispose() {
     _textFieldController.dispose();
     super.dispose();
   }
 
+  ///Main create game page widget
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +69,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
             const SizedBox(height: 10),
             ElevatedButton(
                 onPressed: () {
+                  //Ensure that it locks in the and transitions page information
                   _createJoinCode().then((_) {
                     if(_textFieldController.text.isNotEmpty) {
                       Navigator.push(context,

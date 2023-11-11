@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'join_game.dart';
 import 'create_game.dart';
 
+///Homepage starting point
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
   final String title;
 
+  ///Initialize the homepage state
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+///Homepage state
 class _MyHomePageState extends State<MyHomePage> {
 
   @override
@@ -24,6 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            //Join game button
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(
@@ -35,6 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text("Join Game"),
             ),
             const SizedBox(height: 10),
+            //Create game button
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(

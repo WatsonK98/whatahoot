@@ -5,13 +5,16 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'whatacaption/whata_caption_upload.dart';
 
+///Join game page starting point
 class JoinGamePage extends StatefulWidget {
   const JoinGamePage({super.key});
 
+  ///Initialize the state
   @override
   State<JoinGamePage> createState() => _JoinGamePageState();
 }
 
+///Join game page state
 class _JoinGamePageState extends State<JoinGamePage> {
   final TextEditingController _joinCodeController = TextEditingController();
   final TextEditingController _nicknameController = TextEditingController();
@@ -20,6 +23,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
   Barcode? result;
   QRViewController? controller;
 
+  ///Sets the join code but also logs the player and puts them in the server
   Future<bool> _setJoinCode() async {
     final SharedPreferences prefs = await _prefs;
     await FirebaseAuth.instance.signInAnonymously();
@@ -33,16 +37,22 @@ class _JoinGamePageState extends State<JoinGamePage> {
         'name': _nicknameController.text,
         'votes': 0
       });
-      prefs.setString('playerId', playerId!);
-      prefs.setString('serverId', serverId);
-      prefs.setString('joinCode', _joinCodeController.text);
-      prefs.setInt('round', 0);
+
+      //Save all of the credentialing for further usage
+      await prefs.setString('playerId', playerId!);
+      await prefs.setString('serverId', serverId);
+      await prefs.setString('joinCode', _joinCodeController.text);
+      //setting round to zero here allows client players to follow along
+      await prefs.setInt('round', 0);
+
       return true;
     } else {
       return false;
     }
   }
 
+  ///Method for capturing QR codes and updating the controller
+  ///stops the camera after capture
   _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
@@ -53,6 +63,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
     });
   }
 
+  ///Disposes both controllers to free memory
   @override
   void dispose() {
     _joinCodeController.dispose();
@@ -60,6 +71,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
     super.dispose();
   }
 
+  ///Main widget
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,6 +84,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              //Container for QR view port
               SizedBox(
                 height: 300,
                 width: 300,
@@ -81,6 +94,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
                 ),
               ),
               const SizedBox(height: 16),
+              //Container for user nickname
               SizedBox(
                 width: 300,
                 height: 85,
@@ -93,6 +107,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
                   maxLength: 8,
                 ),
               ),
+              //Container for Join Code textfield
               Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                   child: Row(
@@ -109,12 +124,13 @@ class _JoinGamePageState extends State<JoinGamePage> {
                         ),
                       ),
                       const SizedBox(width: 16),
+                      //Container for the join button
                       Expanded(child:
                         ElevatedButton(
                           onPressed: () {
+                            //When the joincode button is pressed ensures that nickname was entered and the nickname and join code are not the same
                             _setJoinCode().then((bool success) {
-                              if (success && _nicknameController.text.isNotEmpty) {
-                                controller?.stopCamera();
+                              if (success && _nicknameController.text.isNotEmpty && _nicknameController.text != _joinCodeController.text) {
                                 Navigator.push(context,
                                     MaterialPageRoute(
                                         builder: (context) => const WhataCaptionUploadPage()));
@@ -123,7 +139,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
                               }
                             });
                           },
-                          child: const Text("Join"),
+                          child: const Text("Join!"),
                         ),
                       ),
                     ],
