@@ -61,14 +61,15 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            const SizedBox(height: 10),
             Center(
               child: _imageFile != null
                       ? Image.memory(
                     _imageFile!.readAsBytesSync(),
-                    scale: .5,
+                    scale: .1,
                     fit: BoxFit.cover,
                   )
-                  : Container(),
+                  : Container(height: 300),
             ),
             const SizedBox(height: 10),
             Row(

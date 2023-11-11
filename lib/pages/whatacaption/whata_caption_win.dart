@@ -13,7 +13,7 @@ class WhataCaptionWinPage extends StatefulWidget {
 
 class _WhataCaptionWinPageState extends State<WhataCaptionWinPage>{
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  final String? _winner = "One Sec!";
+  final String _winner = "One Sec!";
 
   Future<void> _findWinner() async {
     SharedPreferences prefs = await _prefs;
@@ -32,7 +32,7 @@ class _WhataCaptionWinPageState extends State<WhataCaptionWinPage>{
       ), body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text('$_winner'),
+          Text(_winner),
         ],
       ),
     );

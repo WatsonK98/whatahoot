@@ -113,7 +113,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
                         ElevatedButton(
                           onPressed: () {
                             _setJoinCode().then((bool success) {
-                              if (success) {
+                              if (success && _nicknameController.text.isNotEmpty) {
                                 controller?.stopCamera();
                                 Navigator.push(context,
                                     MaterialPageRoute(

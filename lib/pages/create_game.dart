@@ -60,9 +60,11 @@ class _CreateGamePageState extends State<CreateGamePage> {
             ElevatedButton(
                 onPressed: () {
                   _createJoinCode().then((_) {
-                    Navigator.push(context,
-                        MaterialPageRoute(
-                            builder: (context) => const QRJoinPage()));
+                    if(_textFieldController.text.isNotEmpty) {
+                      Navigator.push(context,
+                          MaterialPageRoute(
+                              builder: (context) => const QRJoinPage()));
+                    }
                   });
                 },
                 child: const Text("WhataCaption!")

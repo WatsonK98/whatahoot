@@ -78,15 +78,18 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
     DatabaseReference captionsRef = FirebaseDatabase.instance.ref().child('$serverId/captions/$caption/uid');
     final snapshot = await captionsRef.get();
     if (snapshot.exists) {
-      DatabaseReference votesRef = FirebaseDatabase.instance.ref().child('$serverId/players/${snapshot.value.toString()}/votes');
+      String? playerId = snapshot.value.toString();
+      DatabaseReference votesRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId/votes');
       final snapshot2 = await votesRef.get();
       if (snapshot2.exists) {
         int vote = int.parse(snapshot2.value.toString());
         vote++;
-        votesRef.set(vote);
+        await votesRef.set({
+          'votes': vote
+        });
         int? round = prefs.getInt('round');
         round! + 1;
-        prefs.setInt('round', round);
+        await prefs.setInt('round', round);
       }
     }
   }

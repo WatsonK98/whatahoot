@@ -24,7 +24,6 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
     final storageRef = FirebaseStorage.instance.ref().child('$serverId');
 
     try {
-      await Future.delayed(const Duration(seconds: 20));
       final ListResult result = await storageRef.listAll();
       if (result.items.isNotEmpty) {
         int? round = prefs.getInt('round');
@@ -97,11 +96,13 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                _setCaption().then((_) {
-                  Navigator.push(context,
-                      MaterialPageRoute(
-                          builder: (context) => const WhataCaptionVotePage()));
-                });
+                if (_textEditingController.text.isNotEmpty){
+                  _setCaption().then((_) {
+                    Navigator.push(context,
+                        MaterialPageRoute(
+                            builder: (context) => const WhataCaptionVotePage()));
+                  });
+                }
               },
               child: const Text('Let\'s Go!')
             ),
