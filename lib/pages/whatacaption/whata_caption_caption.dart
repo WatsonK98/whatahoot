@@ -26,11 +26,16 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
       await Future.delayed(const Duration(seconds: 20));
       final ListResult result = await storageRef.listAll();
       if (result.items.isNotEmpty) {
-        final Reference firstImageRef = result.items.first;
-        _imageUrl = await firstImageRef.getDownloadURL();
-        _imageId = firstImageRef.name;
-        prefs.setString('imageId', firstImageRef.name);
-        setState(() {});
+        int? round = prefs.getInt('round');
+        if (round! < result.items.length) {
+          final Reference firstImageRef = result.items[round];
+          _imageUrl = await firstImageRef.getDownloadURL();
+          _imageId = firstImageRef.name;
+          prefs.setString('imageId', firstImageRef.name);
+          setState(() {});
+        } else {
+          //move to win!
+        }
       } else {
         print("No images found in the 'images' directory.");
       }

@@ -25,6 +25,7 @@ class _QRJoinPageState extends State<QRJoinPage> {
     String? serverId = 'servers/$joinCode';
     prefs.setString('serverId', serverId);
     String? userName = prefs.getString('nickName');
+    prefs.setInt('round', 0);
     if (userName != null) {
       DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');
       playerRef.set({
@@ -37,6 +38,7 @@ class _QRJoinPageState extends State<QRJoinPage> {
   @override
   void initState() {
     super.initState();
+
     _joinCode = _prefs.then((SharedPreferences prefs) {
       return prefs.getString('joinCode') ?? '';
     });

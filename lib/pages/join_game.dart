@@ -36,7 +36,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
       prefs.setString('playerId', playerId!);
       prefs.setString('serverId', serverId);
       prefs.setString('joinCode', _joinCodeController.text);
-      prefs.setInt('round', 1);
+      prefs.setInt('round', 0);
       return true;
     } else {
       return false;
