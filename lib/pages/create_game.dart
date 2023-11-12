@@ -3,6 +3,8 @@ import 'package:whatahoot/pages/qr_join.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 
+///Created by Jesus T.D.
+
 ///Stateful widget for create game ensures user input
 class CreateGamePage extends StatefulWidget {
   const CreateGamePage({super.key});

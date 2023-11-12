@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'whatacaption/whata_caption_upload.dart';
 
+///Created by Alexandder Watson
+
 ///QR create game starting point
 class QRJoinPage extends StatefulWidget {
   const QRJoinPage({super.key});

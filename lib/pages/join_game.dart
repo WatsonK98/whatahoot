@@ -5,6 +5,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'whatacaption/whata_caption_upload.dart';
 
+///Created by Francisco Vazquez
+
 ///Join game page starting point
 class JoinGamePage extends StatefulWidget {
   const JoinGamePage({super.key});

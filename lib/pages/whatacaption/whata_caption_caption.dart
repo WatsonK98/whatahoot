@@ -5,6 +5,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'whata_caption_vote.dart';
 import 'whata_caption_win.dart';
 
+///Created By Nathanael Perez
+
 ///Caption page starting point
 class WhataCaptionCaptionPage extends StatefulWidget {
   const WhataCaptionCaptionPage({super.key});

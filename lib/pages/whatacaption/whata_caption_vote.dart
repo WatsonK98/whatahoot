@@ -6,6 +6,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'whata_caption_caption.dart';
 
+///Created by Gustavo Rubio
+
 class WhataCaptionVotePage extends StatefulWidget {
   const WhataCaptionVotePage({super.key});
 
@@ -21,11 +23,12 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
   ///Load Image from the net storage container
   Future<void> _loadImage() async {
     SharedPreferences prefs = await _prefs;
+    //Initialize search params
     String? serverId = prefs.getString('joinCode');
     final storageRef = FirebaseStorage.instance.ref().child('$serverId');
 
     try {
-      await Future.delayed(const Duration(seconds: 20));
+      //Attempt to get the first image
       final ListResult result = await storageRef.listAll();
       if (result.items.isNotEmpty) {
         final Reference firstImageRef = result.items.first;
@@ -41,8 +44,8 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
 
   ///Load captions from the database
   Future<void> _loadCaptions() async {
-    //load the serverId
     SharedPreferences prefs = await _prefs;
+    //Load search params
     String? serverId = prefs.getString('serverId');
     String? imageId = prefs.getString('imageId');
     //open a reference
@@ -74,16 +77,20 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
   ///update the caption vote
   Future<void> _voteCaption(String caption) async {
     SharedPreferences prefs = await _prefs;
+    //Get search param
     String? serverId = prefs.getString('serverId');
+    //Make a reference to location in database
     DatabaseReference captionsRef = FirebaseDatabase.instance.ref().child('$serverId/captions/$caption/uid');
     final snapshot = await captionsRef.get();
 
     if (snapshot.exists) {
+      //Get the vote UID
       String? playerId = snapshot.value.toString();
       DatabaseReference votesRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId/votes');
       final snapshot2 = await votesRef.get();
 
       if (snapshot2.exists) {
+        //Update vote count and round
         int vote = int.parse(snapshot2.value.toString());
         vote++;
 

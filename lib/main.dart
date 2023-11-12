@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:whatahoot/pages/home_page.dart';
 
+///Created Samuel R. Sanchez
+
 ///Application starting point and initialization
 void main() async {
 

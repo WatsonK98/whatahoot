@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'join_game.dart';
 import 'create_game.dart';
 
+///Created by Adrian Urquizo
+
 ///Homepage starting point
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});

@@ -5,6 +5,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'whata_caption_caption.dart';
 import 'dart:io';
 
+///Created by David Vazquez
+
 ///Whatacaption upload page starting point
 class WhataCaptionUploadPage extends StatefulWidget{
   const WhataCaptionUploadPage({super.key});
@@ -25,21 +27,26 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
   Future<void> _findImageFile() async {
     SharedPreferences prefs = await _prefs;
 
+    //Loads reference data
     String? serverId = prefs.getString('joinCode');
     String? playerId = prefs.getString('playerId');
 
+    //Opens image storage and sets the image
     ImagePicker picker = ImagePicker();
     XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image == null) {
       return;
     }
 
+    //Set the state to hold the image file
     setState(() {
       _imageFile = File(image.path);
     });
 
+    //Creates an image reference
     final imageRef = storageRef.child("$serverId/$playerId");
     try {
+      //Upload the file
       UploadTask uploadTask = imageRef.putFile(_imageFile!);
       uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
         print('Upload progress: ${snapshot.bytesTransferred}/${snapshot.totalBytes}');
@@ -89,14 +96,10 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
-                    //
                     onPressed: () {
-                      //Only move on if an image was uploaded
-                      if (_imageUploaded) {
                         Navigator.push(context,
                             MaterialPageRoute(
                                 builder: (context) => const WhataCaptionCaptionPage()));
-                      }
                     },
                     child: const Text('Continue')
                 ),
