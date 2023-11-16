@@ -35,6 +35,7 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
         //Use the round to get the appropriate image
         int round = prefs.getInt('round') ?? 0;
         if (round < result.items.length) {
+          print(result.items);
           final Reference firstImageRef = result.items[round];
           _imageUrl = await firstImageRef.getDownloadURL();
           _imageId = firstImageRef.name;

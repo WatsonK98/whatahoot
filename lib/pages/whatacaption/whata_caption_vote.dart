@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -55,8 +56,10 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
 
     if (snapshot.exists) {
       //get the value of the snapshot
-      String data = snapshot.value.toString();
-
+      final data = snapshot.value.toString();
+      print(data);
+      final dat = jsonEncode(snapshot.value);
+      final jsonData = jsonDecode(dat);
       // Remove the enclosing curly braces and split the string by commas
       List<String> pairs = data.substring(1, data.length - 1).split(', ');
 
