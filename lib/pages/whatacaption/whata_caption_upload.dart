@@ -46,7 +46,7 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
     //Creates an image reference
     final imageRef = storageRef.child("$serverId/$playerId");
     //Upload the file
-    imageRef.putFile(_imageFile!);
+    await imageRef.putFile(_imageFile!);
   }
 
   ///Page widget
