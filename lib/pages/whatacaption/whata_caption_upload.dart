@@ -21,7 +21,7 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final storageRef = FirebaseStorage.instance.ref();
   static File? _imageFile;
-  bool _imageUploaded = false;
+  final bool _imageUploaded = false;
 
   ///sends the image file to cloud storage
   Future<void> _findImageFile() async {
