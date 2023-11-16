@@ -45,18 +45,8 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
 
     //Creates an image reference
     final imageRef = storageRef.child("$serverId/$playerId");
-    try {
-      //Upload the file
-      UploadTask uploadTask = imageRef.putFile(_imageFile!);
-      uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
-        print('Upload progress: ${snapshot.bytesTransferred}/${snapshot.totalBytes}');
-      });
-      await uploadTask.whenComplete(() {
-        print('Upload complete');
-      });
-    } catch (e) {
-      print(e);
-    }
+    //Upload the file
+    imageRef.putFile(_imageFile!);
   }
 
   ///Page widget
