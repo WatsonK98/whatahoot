@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,6 +21,7 @@ class WhataCaptionUploadPage extends StatefulWidget{
 ///Upload page state
 class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final Completer<void> _uploadCompleter = Completer<void>();
   final storageRef = FirebaseStorage.instance.ref();
   static File? _imageFile;
   final bool _imageUploaded = false;
@@ -45,8 +48,17 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
 
     //Creates an image reference
     final imageRef = storageRef.child("$serverId/$playerId");
-    //Upload the file
-    await imageRef.putFile(_imageFile!);
+    try {
+      //Upload the file
+      UploadTask uploadTask = imageRef.putFile(_imageFile!);
+      uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+      });
+      await uploadTask.whenComplete(() {
+        _uploadCompleter.complete();
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   ///Page widget
@@ -61,8 +73,6 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            //Image file container
-            const SizedBox(height: 10),
             Center(
               child: _imageFile != null
                       ? Image.memory(
@@ -87,14 +97,16 @@ class _WhataCaptionUploadPageState extends State<WhataCaptionUploadPage>{
                 const SizedBox(width: 10),
                 ElevatedButton(
                     onPressed: () {
+                      _uploadCompleter.future.then((_) {
                         Navigator.push(context,
                             MaterialPageRoute(
                                 builder: (context) => const WhataCaptionCaptionPage()));
+                      });
                     },
                     child: const Text('Continue')
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
