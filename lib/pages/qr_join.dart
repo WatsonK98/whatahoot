@@ -29,9 +29,10 @@ class _QRJoinPageState extends State<QRJoinPage> {
     String? playerId = FirebaseAuth.instance.currentUser?.uid;
     String? joinCode = await _joinCode;
     await prefs.setString('joinCode', joinCode);
+    await prefs.setString('playerId', playerId!);
     String? serverId = 'servers/$joinCode';
     await prefs.setString('serverId', serverId);
-    String? userName = prefs.getString('nickName');
+    String? userName = prefs.getString('nickname');
 
     if (userName != null) {
       DatabaseReference playerRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId');

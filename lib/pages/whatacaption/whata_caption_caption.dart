@@ -95,7 +95,9 @@ class _WhataCaptionCaptionPageState extends State<WhataCaptionCaptionPage> {
               child: _imageUrl != null
                   ? Image.network(
                 _imageUrl!,
-                scale: 0.5,
+                width: 300,
+                height: 300,
+                fit: BoxFit.scaleDown,
               )
                   : const CircularProgressIndicator(),
             ),

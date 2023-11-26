@@ -89,12 +89,14 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
     if (snapshot.exists) {
       //Get the vote UID
       String? playerId = snapshot.value.toString();
+      print('player $playerId');
       DatabaseReference votesRef = FirebaseDatabase.instance.ref().child('$serverId/players/$playerId/votes');
       final snapshot2 = await votesRef.get();
 
       if (snapshot2.exists) {
         //Update vote count and round
         int vote = int.parse(snapshot2.value.toString());
+        print('vote $vote');
         vote++;
 
         await votesRef.set({'votes': vote});
@@ -129,7 +131,9 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
               child: _imageUrl != null
                       ? Image.network(
                     _imageUrl!,
-                    scale: 0.5,
+                    width: 300,
+                    height: 300,
+                    fit: BoxFit.scaleDown,
                   )
                   : const CircularProgressIndicator()
             ),
