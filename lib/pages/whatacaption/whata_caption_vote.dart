@@ -59,7 +59,6 @@ class _WhataCaptionVotePageState extends State<WhataCaptionVotePage> {
       final data = snapshot.value.toString();
       print(data);
       final dat = jsonEncode(snapshot.value);
-      final jsonData = jsonDecode(dat);
       // Remove the enclosing curly braces and split the string by commas
       List<String> pairs = data.substring(1, data.length - 1).split(', ');
 
